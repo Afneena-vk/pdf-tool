@@ -51,3 +51,17 @@ exports.extractPDF = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.downloadPDF = (req, res) => {
+  const filename = req.params.filename;
+
+  const filePath = path.join(__dirname, "../output", filename);
+
+  
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({ message: "File not found" });
+  }
+
+  
+  res.download(filePath);
+};
