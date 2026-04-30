@@ -1,5 +1,6 @@
 import { useState } from "react";
 import API from "../services/api";
+import Preview from "./Preview";
 
 const Upload = () => {
   const [file, setFile] = useState(null);
@@ -62,6 +63,9 @@ const Upload = () => {
           Uploaded: {filename}
         </p>
       )}
+
+    <Preview filename={filename} />
+
     </div>
   );
 };
