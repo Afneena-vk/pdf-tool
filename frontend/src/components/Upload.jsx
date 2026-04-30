@@ -5,6 +5,7 @@ import Preview from "./Preview";
 const Upload = () => {
   const [file, setFile] = useState(null);
   const [filename, setFilename] = useState("");
+    const [selectedPages, setSelectedPages] = useState([]);
 
   
   const handleChange = (e) => {
@@ -64,7 +65,13 @@ const Upload = () => {
         </p>
       )}
 
-    <Preview filename={filename} />
+    <Preview filename={filename} setSelectedPages={setSelectedPages}/>
+
+          {selectedPages.length > 0 && (
+        <p className="mt-4">
+          Selected Pages: {selectedPages.join(", ")}
+        </p>
+      )}
 
     </div>
   );
