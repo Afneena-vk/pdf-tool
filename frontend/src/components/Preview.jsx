@@ -7,7 +7,8 @@ pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
 
 
 
-const Preview = ({ filename }) => {
+// const Preview = ({ filename }) => {
+const Preview = ({ filename, setSelectedPages }) => {    
   const [numPages, setNumPages] = useState(null);
   const [selected, setSelected] = useState([]);
 

@@ -5,8 +5,8 @@ import Preview from "./Preview";
 const Upload = () => {
   const [file, setFile] = useState(null);
   const [filename, setFilename] = useState("");
-    const [selectedPages, setSelectedPages] = useState([]);
-
+  const [selectedPages, setSelectedPages] = useState([]);
+  const [newFile, setNewFile] = useState("");
   
   const handleChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -41,6 +41,32 @@ const Upload = () => {
     }
   };
 
+  const handleExtract = async () => {
+  if (!filename) {
+    alert("Upload a file first");
+    return;
+  }
+
+  if (selectedPages.length === 0) {
+    alert("Select at least one page");
+    return;
+  }
+
+  try {
+    const res = await API.post("/extract", {
+      filename,
+      pages: selectedPages,
+    });
+
+    setNewFile(res.data.newFile);
+    alert("PDF extracted successfully");
+  } catch (err) {
+    console.error(err);
+    alert("Extraction failed");
+  }
+};
+
+
   return (
     <div className="p-6 border rounded-lg shadow-md max-w-md mx-auto mt-10">
       <h2 className="text-xl font-semibold mb-4">Upload PDF</h2>
@@ -72,6 +98,28 @@ const Upload = () => {
           Selected Pages: {selectedPages.join(", ")}
         </p>
       )}
+
+      {/* Extract Button */}
+{filename && (
+  <button
+    onClick={handleExtract}
+    className="mt-4 bg-green-500 text-white px-4 py-2 rounded"
+  >
+    Extract Pages
+  </button>
+)}
+
+{/* Download Link */}
+{newFile && (
+  <div className="mt-4">
+    <a
+      href={`${import.meta.env.VITE_API_URL}/download/${newFile}`}
+      className="text-blue-600 underline"
+    >
+      Download Extracted PDF
+    </a>
+  </div>
+)}
 
     </div>
   );
