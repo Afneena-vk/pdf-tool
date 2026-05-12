@@ -67,62 +67,144 @@ const Upload = () => {
 };
 
 
-  return (
-    <div className="p-6 border rounded-lg shadow-md max-w-md mx-auto mt-10">
-      <h2 className="text-xl font-semibold mb-4">Upload PDF</h2>
+return (
+  <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+    <div className="bg-white w-full max-w-3xl rounded-2xl shadow-lg p-6">
 
-      <input
-        type="file"
-        accept="application/pdf"
-        onChange={handleChange}
-        className="mb-4"
-      />
+      {/* Title */}
+      <h1 className="text-2xl font-bold text-center mb-6">
+        PDF Page Extractor
+      </h1>
 
-      <button
-        onClick={handleUpload}
-        className="bg-blue-500 text-white px-4 py-2 rounded"
-      >
-        Upload
-      </button>
+      {/* Upload Section */}
+      <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
+        <input
+          type="file"
+          accept="application/pdf"
+          onChange={handleChange}
+          className="border p-2 rounded w-full sm:w-auto"
+        />
 
+        <button
+          onClick={handleUpload}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded transition"
+        >
+          Upload
+        </button>
+      </div>
+
+      {/* Uploaded File */}
       {filename && (
-        <p className="mt-4 text-green-600">
+        <p className="mt-4 text-center text-green-600 font-medium">
           Uploaded: {filename}
         </p>
       )}
 
-    <Preview filename={filename} setSelectedPages={setSelectedPages}/>
+      {/* Preview */}
+      <div className="mt-6">
+        <Preview filename={filename} setSelectedPages={setSelectedPages} />
+      </div>
 
-          {selectedPages.length > 0 && (
-        <p className="mt-4">
-          Selected Pages: {selectedPages.join(", ")}
+      {/* Selected Pages */}
+      {selectedPages.length > 0 && (
+        <p className="mt-4 text-center text-gray-700">
+          Selected Pages:{" "}
+          <span className="font-semibold">
+            {selectedPages.join(", ")}
+          </span>
         </p>
       )}
 
-      {/* Extract Button */}
-{filename && (
-  <button
-    onClick={handleExtract}
-    className="mt-4 bg-green-500 text-white px-4 py-2 rounded"
-  >
-    Extract Pages
-  </button>
-)}
+      {/* Actions */}
+      <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center items-center">
 
-{/* Download Link */}
-{newFile && (
-  <div className="mt-4">
-    <a
-      href={`${import.meta.env.VITE_API_URL}/download/${newFile}`}
-      className="text-blue-600 underline"
-    >
-      Download Extracted PDF
-    </a>
-  </div>
-)}
+        {/* Extract */}
+        {filename && (
+          <button
+            onClick={handleExtract}
+            className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded transition"
+          >
+            Extract Pages
+          </button>
+        )}
+
+        {/* Download */}
+        {newFile && (
+          <a
+            href={`${import.meta.env.VITE_API_URL}/download/${newFile}`}
+            download
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded transition"
+          >
+            Download PDF
+          </a>
+        )}
+      </div>
 
     </div>
-  );
+  </div>
+);
+
 };
 
 export default Upload;
+
+
+
+
+
+//   return (
+//     <div className="p-6 border rounded-lg shadow-md max-w-md mx-auto mt-10">
+//       <h2 className="text-xl font-semibold mb-4">Upload PDF</h2>
+
+//       <input
+//         type="file"
+//         accept="application/pdf"
+//         onChange={handleChange}
+//         className="mb-4"
+//       />
+
+//       <button
+//         onClick={handleUpload}
+//         className="bg-blue-500 text-white px-4 py-2 rounded"
+//       >
+//         Upload
+//       </button>
+
+//       {filename && (
+//         <p className="mt-4 text-green-600">
+//           Uploaded: {filename}
+//         </p>
+//       )}
+
+//     <Preview filename={filename} setSelectedPages={setSelectedPages}/>
+
+//           {selectedPages.length > 0 && (
+//         <p className="mt-4">
+//           Selected Pages: {selectedPages.join(", ")}
+//         </p>
+//       )}
+
+//       {/* Extract Button */}
+// {filename && (
+//   <button
+//     onClick={handleExtract}
+//     className="mt-4 bg-green-500 text-white px-4 py-2 rounded"
+//   >
+//     Extract Pages
+//   </button>
+// )}
+
+// {/* Download Link */}
+// {newFile && (
+//   <div className="mt-4">
+//     <a
+//       href={`${import.meta.env.VITE_API_URL}/download/${newFile}`}
+//       className="text-blue-600 underline"
+//     >
+//       Download Extracted PDF
+//     </a>
+//   </div>
+// )}
+
+//     </div>
+//   );
