@@ -6,7 +6,8 @@ const { uploadPDF,  getPDF,  extractPDF, downloadPDF  } = require("../controller
 
 router.post("/upload", upload.single("pdf"), uploadPDF);
 router.get("/:filename", getPDF);
-router.post("/extract", extractPDF);
 router.get("/download/:filename", downloadPDF);
+router.post("/extract", extractPDF);
+
 
 module.exports = router;

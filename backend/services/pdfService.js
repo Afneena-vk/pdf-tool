@@ -19,7 +19,7 @@ exports.extractPages = async (filename, pages) => {
 
   const copiedPages = await newPdf.copyPages(
     pdfDoc,
-    pages.map(p => p - 1) // convert to 0-based index
+    pages.map(p => p - 1) 
   );
 
   copiedPages.forEach((page) => newPdf.addPage(page));

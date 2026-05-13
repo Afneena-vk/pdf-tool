@@ -33,7 +33,9 @@ const Upload = () => {
 
       const res = await API.post("/upload", formData);
 
-      setFilename(res.data.filename);
+      // setFilename(res.data.filename);
+      setFilename(res.data.data.filename);
+
       alert("File uploaded successfully");
     } catch (err) {
       console.error(err);
@@ -58,7 +60,8 @@ const Upload = () => {
       pages: selectedPages,
     });
 
-    setNewFile(res.data.newFile);
+    // setNewFile(res.data.newFile);
+    setNewFile(res.data.data.newFile);
     alert("PDF extracted successfully");
   } catch (err) {
     console.error(err);
