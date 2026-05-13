@@ -1,110 +1,90 @@
 const path = require("path");
 const fs = require("fs");
 const { extractPages } = require("../services/pdfService");
+const STATUS_CODES = require("../utils/constants/statusCodes");
 
-exports.uploadPDF = (req, res) => {
+exports.uploadPDF = (req, res, next) => {
   try {
     if (!req.file) {
-      return res.status(400).json({
-        success: false,
-        message: "No file uploaded",
-      });
+      const error = new Error("No file uploaded");
+      error.statusCode = STATUS_CODES.BAD_REQUEST;
+      throw error;
     }
 
-    res.status(200).json({
+    res.status(STATUS_CODES.OK).json({
       success: true,
       data: {
         filename: req.file.filename,
       },
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    next(error);
   }
 };
 
-// if (!req.file) {
-//   return res.status(400).json({ message: "No file uploaded" });
-// }
+exports.getPDF = (req, res, next) => {
+  try {
+    const filename = req.params.filename;
 
-//     res.status(200).json({
-//       message: "File uploaded successfully",
-//       filename: req.file.filename,
-//     });
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
+    const filePath = path.join(__dirname, "../uploads", filename);
 
-exports.getPDF = (req, res) => {
-  const filename = req.params.filename;
+    if (!fs.existsSync(filePath)) {
+      // return res.status(404).json({ message: "File not found" });
+      const error = new Error("File not found");
+      error.statusCode = STATUS_CODES.NOT_FOUND;
+      throw error;
+    }
 
-  const filePath = path.join(__dirname, "../uploads", filename);
-
-  if (!fs.existsSync(filePath)) {
-    return res.status(404).json({ message: "File not found" });
+    res.sendFile(filePath);
+  } catch (error) {
+    next(error);
   }
-
-  res.sendFile(filePath);
 };
 
-exports.extractPDF = async (req, res) => {
+exports.extractPDF = async (req, res, next) => {
   try {
     const { filename, pages } = req.body;
 
-    // if (!filename || !pages) {
-    //   return res.status(400).json({ message: "Missing data" });
-    // }
-
     if (!filename) {
-      return res.status(400).json({
-        success: false,
-        message: "Filename is required",
-      });
+      const error = new Error("Filename is required");
+      error.statusCode = 400;
+      throw error;
     }
 
     if (!Array.isArray(pages) || pages.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Pages must be a non-empty array",
-      });
+      const error = new Error("Pages must be a non-empty array");
+      error.statusCode = STATUS_CODES.BAD_REQUEST;
+      throw error;
     }
 
     const newFile = await extractPages(filename, pages);
 
-    res.status(200).json({
+    res.status(STATUS_CODES.OK).json({
       success: true,
       data: {
         newFile,
       },
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    next(error);
   }
 };
 
-//     res.status(200).json({
-//       message: "PDF pages extracted successfully",
-//       newFile,
-//     });
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
+exports.downloadPDF = (req, res, next) => {
+  try {
+    const filename = req.params.filename;
 
-exports.downloadPDF = (req, res) => {
-  const filename = req.params.filename;
+    const filePath = path.join(__dirname, "../output", filename);
 
-  const filePath = path.join(__dirname, "../output", filename);
+    if (!fs.existsSync(filePath)) {
+      // return res.status(404).json({ message: "File not found" });
+      const error = new Error("File not found");
+      error.statusCode = STATUS_CODES.NOT_FOUND;
+      throw error;
+    }
 
-  if (!fs.existsSync(filePath)) {
-    return res.status(404).json({ message: "File not found" });
+    res.download(filePath);
+  } catch (error) {
+    next(error);
   }
-
-  res.download(filePath);
 };
