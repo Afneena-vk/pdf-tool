@@ -37,10 +37,17 @@ const Upload = () => {
       setFilename(res.data.data.filename);
 
       alert("File uploaded successfully");
-    } catch (err) {
-      console.error(err);
-      alert("Upload failed");
-    }
+    // } catch (err) {
+    //   console.error(err);
+    //   alert("Upload failed");
+    // }
+ } catch (err) {
+  console.error(err);
+
+  alert(
+    err.response?.data?.message || "Upload failed"
+  );
+}
   };
 
   const handleExtract = async () => {
@@ -63,10 +70,17 @@ const Upload = () => {
     // setNewFile(res.data.newFile);
     setNewFile(res.data.data.newFile);
     alert("PDF extracted successfully");
+  // } catch (err) {
+  //   console.error(err);
+  //   alert("Extraction failed");
+  // }
   } catch (err) {
-    console.error(err);
-    alert("Extraction failed");
-  }
+  console.error(err);
+
+  alert(
+    err.response?.data?.message || "Extraction failed"
+  );
+}
 };
 
 
