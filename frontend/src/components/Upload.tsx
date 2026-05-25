@@ -9,23 +9,37 @@ import {
 } from "lucide-react";
 
 const Upload = () => {
-  const [file, setFile] = useState(null);
-  const [filename, setFilename] = useState("");
-  const [selectedPages, setSelectedPages] = useState([]);
-  const [newFile, setNewFile] = useState("");
+  const [file, setFile] = useState<File | null>(null);
 
-  const [uploading, setUploading] = useState(false);
-  const [extracting, setExtracting] = useState(false);
+  const [filename, setFilename] = useState<string>("");
 
-  const handleChange = (e) => {
-    const selectedFile = e.target.files[0];
+  const [selectedPages, setSelectedPages] =
+    useState<number[]>([]);
 
-    if (selectedFile && selectedFile.type !== "application/pdf") {
+  const [newFile, setNewFile] = useState<string>("");
+
+  const [uploading, setUploading] =
+    useState<boolean>(false);
+
+  const [extracting, setExtracting] =
+    useState<boolean>(false);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const selectedFile = e.target.files?.[0];
+
+    if (
+      selectedFile &&
+      selectedFile.type !== "application/pdf"
+    ) {
       alert("Only PDF files are allowed");
       return;
     }
 
-    setFile(selectedFile);
+    if (selectedFile) {
+      setFile(selectedFile);
+    }
   };
 
   const handleUpload = async () => {
@@ -38,6 +52,7 @@ const Upload = () => {
       setUploading(true);
 
       const formData = new FormData();
+
       formData.append("pdf", file);
 
       const res = await API.post("/upload", formData);
@@ -45,27 +60,40 @@ const Upload = () => {
       setFilename(res.data.data.filename);
 
       alert("File uploaded successfully");
-    } catch (err) {
+
+    } catch (err: any) {
+
       console.error(err);
 
-      alert(err.response?.data?.message || "Upload failed");
+      alert(
+        err.response?.data?.message ||
+          "Upload failed"
+      );
+
     } finally {
+
       setUploading(false);
     }
   };
 
   const handleExtract = async () => {
+
     if (!filename) {
+
       alert("Upload a file first");
+
       return;
     }
 
     if (selectedPages.length === 0) {
+
       alert("Select at least one page");
+
       return;
     }
 
     try {
+
       setExtracting(true);
 
       const res = await API.post("/extract", {
@@ -76,11 +104,18 @@ const Upload = () => {
       setNewFile(res.data.data.newFile);
 
       alert("PDF extracted successfully");
-    } catch (err) {
+
+    } catch (err: any) {
+
       console.error(err);
 
-      alert(err.response?.data?.message || "Extraction failed");
+      alert(
+        err.response?.data?.message ||
+          "Extraction failed"
+      );
+
     } finally {
+
       setExtracting(false);
     }
   };
@@ -92,9 +127,13 @@ const Upload = () => {
       <div className="max-w-6xl mx-auto">
 
         <div className="text-center mb-10">
+
           <div className="flex justify-center mb-4">
+
             <div className="bg-indigo-500/20 p-4 rounded-full">
+
               <Sparkles className="w-10 h-10 text-indigo-400" />
+
             </div>
           </div>
 
@@ -103,7 +142,8 @@ const Upload = () => {
           </h1>
 
           <p className="text-slate-300 max-w-xl mx-auto">
-            Upload your PDF, preview pages, select the pages you want,
+            Upload your PDF, preview pages,
+            select the pages you want,
             and download the extracted PDF instantly.
           </p>
         </div>
@@ -115,7 +155,9 @@ const Upload = () => {
           <div className="border-2 border-dashed border-indigo-400/40 rounded-2xl p-8 text-center bg-slate-900/40">
 
             <div className="flex justify-center mb-4">
+
               <UploadCloud className="w-14 h-14 text-indigo-400" />
+
             </div>
 
             <h2 className="text-xl font-semibold mb-2">
@@ -123,7 +165,8 @@ const Upload = () => {
             </h2>
 
             <p className="text-slate-400 mb-6">
-              Select a PDF file to preview and extract pages
+              Select a PDF file to preview
+              and extract pages
             </p>
 
             <input
@@ -143,8 +186,11 @@ const Upload = () => {
 
             {file && (
               <div className="mt-5 flex items-center justify-center gap-2 text-green-400">
+
                 <FileText className="w-5 h-5" />
+
                 <span>{file.name}</span>
+
               </div>
             )}
 
@@ -153,7 +199,9 @@ const Upload = () => {
               disabled={uploading}
               className="mt-6 bg-cyan-500 hover:bg-cyan-600 disabled:opacity-50 transition px-8 py-3 rounded-xl font-semibold"
             >
-              {uploading ? "Uploading..." : "Upload PDF"}
+              {uploading
+                ? "Uploading..."
+                : "Upload PDF"}
             </button>
           </div>
 
@@ -166,20 +214,24 @@ const Upload = () => {
 
           {/* Preview */}
           <div className="mt-10">
+
             <Preview
               filename={filename}
               setSelectedPages={setSelectedPages}
             />
+
           </div>
 
           {/* Selected Pages */}
           {selectedPages.length > 0 && (
             <div className="mt-6 bg-indigo-500/10 border border-indigo-400/20 rounded-xl p-4 text-center">
+
               <p className="text-slate-200">
                 Selected Pages:
               </p>
 
               <div className="mt-2 flex flex-wrap justify-center gap-2">
+
                 {selectedPages.map((page) => (
                   <span
                     key={page}
@@ -188,6 +240,7 @@ const Upload = () => {
                     {page}
                   </span>
                 ))}
+
               </div>
             </div>
           )}
@@ -201,7 +254,9 @@ const Upload = () => {
                 disabled={extracting}
                 className="bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 transition px-8 py-3 rounded-xl font-semibold"
               >
-                {extracting ? "Extracting..." : "Extract Pages"}
+                {extracting
+                  ? "Extracting..."
+                  : "Extract Pages"}
               </button>
             )}
 
@@ -212,6 +267,7 @@ const Upload = () => {
                 className="bg-indigo-600 hover:bg-indigo-700 transition px-8 py-3 rounded-xl font-semibold flex items-center justify-center gap-2"
               >
                 <Download className="w-5 h-5" />
+
                 Download PDF
               </a>
             )}
@@ -223,6 +279,232 @@ const Upload = () => {
 };
 
 export default Upload;
+
+// import { useState } from "react";
+// import API from "../services/api";
+// import Preview from "./Preview";
+// import {
+//   UploadCloud,
+//   FileText,
+//   Download,
+//   Sparkles,
+// } from "lucide-react";
+
+// const Upload = () => {
+//   const [file, setFile] = useState(null);
+//   const [filename, setFilename] = useState("");
+//   const [selectedPages, setSelectedPages] = useState([]);
+//   const [newFile, setNewFile] = useState("");
+
+//   const [uploading, setUploading] = useState(false);
+//   const [extracting, setExtracting] = useState(false);
+
+//   const handleChange = (e) => {
+//     const selectedFile = e.target.files[0];
+
+//     if (selectedFile && selectedFile.type !== "application/pdf") {
+//       alert("Only PDF files are allowed");
+//       return;
+//     }
+
+//     setFile(selectedFile);
+//   };
+
+//   const handleUpload = async () => {
+//     if (!file) {
+//       alert("Please select a file");
+//       return;
+//     }
+
+//     try {
+//       setUploading(true);
+
+//       const formData = new FormData();
+//       formData.append("pdf", file);
+
+//       const res = await API.post("/upload", formData);
+
+//       setFilename(res.data.data.filename);
+
+//       alert("File uploaded successfully");
+//     } catch (err) {
+//       console.error(err);
+
+//       alert(err.response?.data?.message || "Upload failed");
+//     } finally {
+//       setUploading(false);
+//     }
+//   };
+
+//   const handleExtract = async () => {
+//     if (!filename) {
+//       alert("Upload a file first");
+//       return;
+//     }
+
+//     if (selectedPages.length === 0) {
+//       alert("Select at least one page");
+//       return;
+//     }
+
+//     try {
+//       setExtracting(true);
+
+//       const res = await API.post("/extract", {
+//         filename,
+//         pages: selectedPages,
+//       });
+
+//       setNewFile(res.data.data.newFile);
+
+//       alert("PDF extracted successfully");
+//     } catch (err) {
+//       console.error(err);
+
+//       alert(err.response?.data?.message || "Extraction failed");
+//     } finally {
+//       setExtracting(false);
+//     }
+//   };
+
+//   return (
+//     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-950 text-white p-6">
+
+//       {/* Header */}
+//       <div className="max-w-6xl mx-auto">
+
+//         <div className="text-center mb-10">
+//           <div className="flex justify-center mb-4">
+//             <div className="bg-indigo-500/20 p-4 rounded-full">
+//               <Sparkles className="w-10 h-10 text-indigo-400" />
+//             </div>
+//           </div>
+
+//           <h1 className="text-4xl font-bold mb-3">
+//             PDF Page Extractor
+//           </h1>
+
+//           <p className="text-slate-300 max-w-xl mx-auto">
+//             Upload your PDF, preview pages, select the pages you want,
+//             and download the extracted PDF instantly.
+//           </p>
+//         </div>
+
+//         {/* Main Card */}
+//         <div className="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl shadow-2xl p-6 md:p-10">
+
+//           {/* Upload Area */}
+//           <div className="border-2 border-dashed border-indigo-400/40 rounded-2xl p-8 text-center bg-slate-900/40">
+
+//             <div className="flex justify-center mb-4">
+//               <UploadCloud className="w-14 h-14 text-indigo-400" />
+//             </div>
+
+//             <h2 className="text-xl font-semibold mb-2">
+//               Upload PDF File
+//             </h2>
+
+//             <p className="text-slate-400 mb-6">
+//               Select a PDF file to preview and extract pages
+//             </p>
+
+//             <input
+//               type="file"
+//               accept="application/pdf"
+//               onChange={handleChange}
+//               className="hidden"
+//               id="pdfUpload"
+//             />
+
+//             <label
+//               htmlFor="pdfUpload"
+//               className="cursor-pointer inline-block bg-indigo-600 hover:bg-indigo-700 transition px-6 py-3 rounded-xl font-medium"
+//             >
+//               Choose PDF
+//             </label>
+
+//             {file && (
+//               <div className="mt-5 flex items-center justify-center gap-2 text-green-400">
+//                 <FileText className="w-5 h-5" />
+//                 <span>{file.name}</span>
+//               </div>
+//             )}
+
+//             <button
+//               onClick={handleUpload}
+//               disabled={uploading}
+//               className="mt-6 bg-cyan-500 hover:bg-cyan-600 disabled:opacity-50 transition px-8 py-3 rounded-xl font-semibold"
+//             >
+//               {uploading ? "Uploading..." : "Upload PDF"}
+//             </button>
+//           </div>
+
+//           {/* Uploaded File */}
+//           {filename && (
+//             <div className="mt-6 bg-green-500/10 border border-green-500/20 rounded-xl p-4 text-green-300 text-center">
+//               Uploaded Successfully
+//             </div>
+//           )}
+
+//           {/* Preview */}
+//           <div className="mt-10">
+//             <Preview
+//               filename={filename}
+//               setSelectedPages={setSelectedPages}
+//             />
+//           </div>
+
+//           {/* Selected Pages */}
+//           {selectedPages.length > 0 && (
+//             <div className="mt-6 bg-indigo-500/10 border border-indigo-400/20 rounded-xl p-4 text-center">
+//               <p className="text-slate-200">
+//                 Selected Pages:
+//               </p>
+
+//               <div className="mt-2 flex flex-wrap justify-center gap-2">
+//                 {selectedPages.map((page) => (
+//                   <span
+//                     key={page}
+//                     className="bg-indigo-500 px-3 py-1 rounded-full text-sm"
+//                   >
+//                     {page}
+//                   </span>
+//                 ))}
+//               </div>
+//             </div>
+//           )}
+
+//           {/* Action Buttons */}
+//           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+
+//             {filename && (
+//               <button
+//                 onClick={handleExtract}
+//                 disabled={extracting}
+//                 className="bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 transition px-8 py-3 rounded-xl font-semibold"
+//               >
+//                 {extracting ? "Extracting..." : "Extract Pages"}
+//               </button>
+//             )}
+
+//             {newFile && (
+//               <a
+//                 href={`${import.meta.env.VITE_API_URL}/download/${newFile}`}
+//                 download
+//                 className="bg-indigo-600 hover:bg-indigo-700 transition px-8 py-3 rounded-xl font-semibold flex items-center justify-center gap-2"
+//               >
+//                 <Download className="w-5 h-5" />
+//                 Download PDF
+//               </a>
+//             )}
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Upload;
 
 // import { useState } from "react";
 // import API from "../services/api";
