@@ -1,6 +1,12 @@
-const multer = require("multer");
-const path = require("path");
+// const multer = require("multer");
+// const path = require("path");
 
+import multer from "multer";
+import path from "path";
+
+import {
+  Request,
+} from "express";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -14,11 +20,16 @@ const storage = multer.diskStorage({
 });
 
 
-const fileFilter = (req, file, cb) => {
+// const fileFilter = (req, file, cb) => {
+const fileFilter = (
+  req: Request,
+  file: Express.Multer.File,
+  cb: multer.FileFilterCallback
+) => {
   if (file.mimetype === "application/pdf") {
     cb(null, true);
   } else {
-    cb(new Error("Only PDF files allowed"), false);
+    cb(new Error("Only PDF files allowed"));
   }
 };
 
@@ -31,4 +42,6 @@ const upload = multer({
 
 });
 
-module.exports = upload;
+export default upload;
+
+// module.exports = upload;
