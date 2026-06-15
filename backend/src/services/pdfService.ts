@@ -1,36 +1,20 @@
-// const fs = require("fs");
-// const path = require("path");
-// const { PDFDocument } = require("pdf-lib");
 
-import fs from "fs";
-import path from "path";
 import { PDFDocument } from "pdf-lib";
+import pdfRepository from "../repositories/pdfRepository";
+import { AppError } from "../utils/AppError";
+
+import STATUS_CODES from "../utils/constants/statusCodes";
 
 
-// exports.extractPages = async (filename, pages) => {
 export const extractPages = async (
   filename: string,
   pages: number[]
 ): Promise<string> => {
-  // const inputPath = path.join(__dirname, "../uploads", filename);
-    const inputPath = path.join(
-    process.cwd(),
-    "uploads",
-    filename
-  );
 
   const outputFilename = `extracted-${Date.now()}.pdf`;
 
-  // const outputPath = path.join(__dirname, "../output", outputFilename);
-    const outputPath = path.join(
-    process.cwd(),
-    "output",
-    outputFilename
-  );
-
   
-  
-  const existingPdfBytes = fs.readFileSync(inputPath);
+  const existingPdfBytes = pdfRepository.readPdf(filename)
 
 
   const pdfDoc = await PDFDocument.load(existingPdfBytes);
@@ -48,7 +32,71 @@ export const extractPages = async (
 
 
   const newPdfBytes = await newPdf.save();
-  fs.writeFileSync(outputPath, newPdfBytes);
+  
+
+  pdfRepository.savePdf(outputFilename, newPdfBytes)
 
   return outputFilename;
+};
+
+
+export const getUploadedPdfPath = (
+  filename: string
+): string => {
+
+  if (
+    !pdfRepository.fileExists(
+      "uploads",
+      filename
+    )
+  ) {
+    
+     throw new AppError(
+    "File not found",
+     STATUS_CODES.NOT_FOUND
+);
+  }
+
+  return pdfRepository.getInputPath(
+    filename
+  );
+};
+
+
+export const getOutputPdfPath = (
+
+  filename: string
+
+): string => {
+
+
+
+  if (
+
+    !pdfRepository.fileExists(
+
+      "output", 
+
+      filename
+
+    )
+
+  ) {
+
+
+    throw new AppError(
+      "File not found",
+      STATUS_CODES.NOT_FOUND
+    );
+
+  }
+
+
+
+  return pdfRepository.getOutputPath( 
+
+    filename
+
+  );
+
 };
