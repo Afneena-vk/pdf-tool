@@ -54,4 +54,5 @@ getOutputPath(filename:string):string{
 
 }
 
-export default new PdfRepository();
+// export default new PdfRepository();
+export default  PdfRepository;

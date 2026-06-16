@@ -1,20 +1,33 @@
 
 import { PDFDocument } from "pdf-lib";
-import pdfRepository from "../repositories/pdfRepository";
+import PdfRepository from "../repositories/pdfRepository";
 import { AppError } from "../utils/AppError";
 
 import STATUS_CODES from "../utils/constants/statusCodes";
 
 
-export const extractPages = async (
-  filename: string,
-  pages: number[]
-): Promise<string> => {
+export class PdfService {
+  constructor(
+    private pdfRepository: PdfRepository
+  ) {}
+
+// export const extractPages = async (
+//   filename: string,
+//   pages: number[]
+// ): Promise<string> => {
+
+  async extractPages(
+    filename: string,
+    pages: number[]
+  ): Promise<string> {
 
   const outputFilename = `extracted-${Date.now()}.pdf`;
 
   
-  const existingPdfBytes = pdfRepository.readPdf(filename)
+  // const existingPdfBytes = pdfRepository.readPdf(filename)
+
+  const existingPdfBytes =
+      this.pdfRepository.readPdf(filename);
 
 
   const pdfDoc = await PDFDocument.load(existingPdfBytes);
@@ -34,18 +47,21 @@ export const extractPages = async (
   const newPdfBytes = await newPdf.save();
   
 
-  pdfRepository.savePdf(outputFilename, newPdfBytes)
+  this.pdfRepository.savePdf(outputFilename, newPdfBytes)
 
   return outputFilename;
 };
 
 
-export const getUploadedPdfPath = (
-  filename: string
-): string => {
+// export const getUploadedPdfPath = (
+//   filename: string
+// ): string => {
+  getUploadedPdfPath(
+    filename: string
+  ): string {
 
   if (
-    !pdfRepository.fileExists(
+    !this.pdfRepository.fileExists(
       "uploads",
       filename
     )
@@ -57,23 +73,26 @@ export const getUploadedPdfPath = (
 );
   }
 
-  return pdfRepository.getInputPath(
+  return this.pdfRepository.getInputPath(
     filename
   );
 };
 
 
-export const getOutputPdfPath = (
+// export const getOutputPdfPath = (
 
-  filename: string
+//   filename: string
 
-): string => {
+// ): string => {
 
+  getOutputPdfPath(
+    filename: string
+  ): string {
 
 
   if (
 
-    !pdfRepository.fileExists(
+    !this.pdfRepository.fileExists(
 
       "output", 
 
@@ -93,10 +112,11 @@ export const getOutputPdfPath = (
 
 
 
-  return pdfRepository.getOutputPath( 
+  return this.pdfRepository.getOutputPath( 
 
     filename
 
   );
+}
 
 };
