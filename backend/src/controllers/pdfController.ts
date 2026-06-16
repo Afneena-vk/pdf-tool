@@ -1,16 +1,23 @@
 import { Request, Response, NextFunction } from "express";
+import { PdfService } from "../services/pdfService";
 
 import { AppError } from "../utils/AppError";
 
-import {
-  extractPages,
-  getUploadedPdfPath,
-  getOutputPdfPath,
-} from "../services/pdfService";
 
 import STATUS_CODES from "../utils/constants/statusCodes";
 
-export const uploadPDF = (req: Request, res: Response, next: NextFunction) => {
+export class PdfController {
+
+  constructor(
+    private pdfService: PdfService
+  ) {}
+
+// export const uploadPDF = (req: Request, res: Response, next: NextFunction) => {
+  uploadPDF = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
   try {
     if (!req.file) {
       throw new AppError("No file uploaded", STATUS_CODES.BAD_REQUEST);
@@ -27,11 +34,16 @@ export const uploadPDF = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const getPDF = (req: Request, res: Response, next: NextFunction) => {
+// export const getPDF = (req: Request, res: Response, next: NextFunction) => {
+  getPDF = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
   try {
     const filename = req.params.filename as string;
 
-    const filePath = getUploadedPdfPath(filename);
+    const filePath = this.pdfService.getUploadedPdfPath(filename);
 
     res.sendFile(filePath);
   } catch (error) {
@@ -39,11 +51,17 @@ export const getPDF = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const extractPDF = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+// export const extractPDF = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction,
+// ) => {
+  extractPDF = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+
   try {
     const { filename, pages } = req.body;
 
@@ -58,7 +76,7 @@ export const extractPDF = async (
       );
     }
 
-    const newFile = await extractPages(filename, pages);
+    const newFile = await this.pdfService.extractPages(filename, pages);
 
     res.status(STATUS_CODES.OK).json({
       success: true,
@@ -71,18 +89,25 @@ export const extractPDF = async (
   }
 };
 
-export const downloadPDF = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+// export const downloadPDF = (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction,
+// ) => {
+  downloadPDF = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
   try {
     const filename = req.params.filename as string;
 
-    const filePath = getOutputPdfPath(filename);
+    const filePath = this.pdfService.getOutputPdfPath(filename);
 
     res.download(filePath);
   } catch (error) {
     next(error);
   }
+
+}
 };
