@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { PdfService } from "../services/pdfService";
+import { IPdfService } from "../services/interfaces/IPdfService";
 
 import { AppError } from "../utils/AppError";
 
@@ -9,7 +10,8 @@ import STATUS_CODES from "../utils/constants/statusCodes";
 export class PdfController {
 
   constructor(
-    private pdfService: PdfService
+      private pdfService: IPdfService
+    // private pdfService: PdfService
   ) {}
 
 // export const uploadPDF = (req: Request, res: Response, next: NextFunction) => {

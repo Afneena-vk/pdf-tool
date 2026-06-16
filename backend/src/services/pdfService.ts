@@ -2,13 +2,16 @@
 import { PDFDocument } from "pdf-lib";
 import PdfRepository from "../repositories/pdfRepository";
 import { AppError } from "../utils/AppError";
+import { IPdfRepository } from "../repositories/interfaces/IPdfRepository";
+import { IPdfService } from "./interfaces/IPdfService";
 
 import STATUS_CODES from "../utils/constants/statusCodes";
 
 
-export class PdfService {
+export class PdfService implements IPdfService{
   constructor(
-    private pdfRepository: PdfRepository
+    // private pdfRepository: PdfRepository
+     private pdfRepository: IPdfRepository
   ) {}
 
 // export const extractPages = async (

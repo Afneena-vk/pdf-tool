@@ -1,7 +1,8 @@
 import fs from "fs";
 import path from "path";
+import { IPdfRepository } from "./interfaces/IPdfRepository";
 
-class PdfRepository{
+class PdfRepository implements IPdfRepository{
 
 getInputPath(filename:string): string{
     return path.join(
