@@ -1,6 +1,7 @@
 import { useState } from "react";
 import API from "../services/api";
 import Preview from "./Preview";
+import { uploadPdf, extractPdf } from "../services/pdfService";
 import {
   UploadCloud,
   FileText,
@@ -55,9 +56,17 @@ const Upload = () => {
 
       formData.append("pdf", file);
 
-      const res = await API.post("/upload", formData);
+      // const res = await API.post("/upload", formData);
 
-      setFilename(res.data.data.filename);
+      // setFilename(res.data.data.filename);
+
+      const data = await uploadPdf(
+         formData
+      );
+
+      setFilename(
+         data.data.filename
+      );
 
       alert("File uploaded successfully");
 
@@ -96,12 +105,21 @@ const Upload = () => {
 
       setExtracting(true);
 
-      const res = await API.post("/extract", {
-        filename,
-        pages: selectedPages,
-      });
+      // const res = await API.post("/extract", {
+      //   filename,
+      //   pages: selectedPages,
+      // });
 
-      setNewFile(res.data.data.newFile);
+      // setNewFile(res.data.data.newFile);
+
+      const data = await extractPdf(
+       filename,
+      selectedPages
+      );
+
+      setNewFile(
+        data.data.newFile
+      );
 
       alert("PDF extracted successfully");
 
