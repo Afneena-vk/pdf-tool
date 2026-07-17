@@ -1,13 +1,15 @@
 import { useState } from "react";
-import API from "../services/api";
+// import API from "../services/api";
 import Preview from "./Preview";
 import { uploadPdf, extractPdf } from "../services/pdfService";
+import axios from "axios";
 import {
   UploadCloud,
   FileText,
   Download,
   Sparkles,
 } from "lucide-react";
+import { toast } from "react-toastify";
 
 const Upload = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -34,7 +36,8 @@ const Upload = () => {
       selectedFile &&
       selectedFile.type !== "application/pdf"
     ) {
-      alert("Only PDF files are allowed");
+      // alert("Only PDF files are allowed");
+      toast.error("Only PDF files are allowed");
       return;
     }
 
@@ -45,7 +48,8 @@ const Upload = () => {
 
   const handleUpload = async () => {
     if (!file) {
-      alert("Please select a file");
+     // alert("Please select a file");
+     toast.warning("Please select a file");
       return;
     }
 
@@ -67,19 +71,36 @@ const Upload = () => {
       setFilename(
          data.data.filename
       );
+         toast.success("File uploaded successfully");
+      // alert("File uploaded successfully");
 
-      alert("File uploaded successfully");
+//     } catch (err: any) {
 
-    } catch (err: any) {
+//       console.error(err);
 
-      console.error(err);
+//       // alert(
+//       //   err.response?.data?.message ||
+//       //     "Upload failed"
+//       // );
 
-      alert(
-        err.response?.data?.message ||
-          "Upload failed"
-      );
+// toast.error(
+//   err.response?.data?.message ||
+//   "Upload failed"
+// );
+//     } 
+  } catch (err: unknown) {
+  console.error(err);
 
-    } finally {
+  if (axios.isAxiosError(err)) {
+    toast.error(
+      err.response?.data?.message ||
+      "Upload failed"
+    );
+  } else {
+    toast.error("Upload failed");
+  }
+}
+    finally {
 
       setUploading(false);
     }
@@ -96,7 +117,8 @@ const Upload = () => {
 
     if (selectedPages.length === 0) {
 
-      alert("Select at least one page");
+      // alert("Select at least one page");
+      toast.warning("Select at least one page");
 
       return;
     }
@@ -120,19 +142,37 @@ const Upload = () => {
       setNewFile(
         data.data.newFile
       );
+      toast.success("PDF extracted successfully");
+      // alert("PDF extracted successfully");
 
-      alert("PDF extracted successfully");
+    // } catch (err: any) {
 
-    } catch (err: any) {
+    //   console.error(err);
 
-      console.error(err);
 
-      alert(
-        err.response?.data?.message ||
-          "Extraction failed"
-      );
+    //   toast.error(
+    //    err.response?.data?.message ||
+    //    "Extraction failed"
+    // );
+    } catch (err: unknown) {
+  console.error(err);
 
-    } finally {
+  if (axios.isAxiosError(err)) {
+    toast.error(
+      err.response?.data?.message ||
+      "Extraction failed"
+    );
+  } else {
+    toast.error("Extraction failed");
+  }
+
+      // alert(
+      //   err.response?.data?.message ||
+      //     "Extraction failed"
+      // );
+
+    }
+     finally {
 
       setExtracting(false);
     }
@@ -282,6 +322,7 @@ const Upload = () => {
               <a
                 href={`${import.meta.env.VITE_API_URL}/download/${newFile}`}
                 download
+                onClick={() => toast.info("Download started")}
                 className="bg-indigo-600 hover:bg-indigo-700 transition px-8 py-3 rounded-xl font-semibold flex items-center justify-center gap-2"
               >
                 <Download className="w-5 h-5" />

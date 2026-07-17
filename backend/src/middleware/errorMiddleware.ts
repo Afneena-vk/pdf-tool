@@ -7,7 +7,7 @@ const errorHandler = (
   err: unknown,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) => {
   let statusCode = STATUS_CODES.INTERNAL_SERVER_ERROR;
   let message = "Something went wrong";

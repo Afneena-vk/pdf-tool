@@ -1,6 +1,6 @@
 
 import { PDFDocument } from "pdf-lib";
-import PdfRepository from "../repositories/pdfRepository";
+// import PdfRepository from "../repositories/pdfRepository";
 import { AppError } from "../utils/AppError";
 import { IPdfRepository } from "../repositories/interfaces/IPdfRepository";
 import { IPdfService } from "./interfaces/IPdfService";
